@@ -95,13 +95,13 @@ class Trainer(BaseTrainer):
         else:
             raise ValueError("Unsupported loss:", self.criterion)
 
-        reg = reg.sqrt()
+        reg = torch.sqrt(reg)
         reg = torch.bmm(reg, reg.transpose(1,2))
         reg = reg-Variable(torch.eye(reg.size(1)).expand_as(reg).cuda())
         reg = torch.pow(reg, 2)
-        reg = reg.sum(1).sum(2)+1e-5
-        reg = reg.sqrt()
-        reg = reg.mean()
+        reg = torch.sum(reg)+1e-5
+        reg = torch.sqrt(reg)
+        reg = torch.mean(reg)
         loss = loss+reg
 
         return loss, prec
